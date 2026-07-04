@@ -1,0 +1,16 @@
+
+> ap@0.0.1 dev
+> astro dev --host 127.0.0.1 --port 4321
+
+[vite] connected.
+[2m00:35:30[22m [34m[types][39m Generated [2m3ms[22m
+[vite] connected.
+[2m00:35:31[22m [34m[content][39m Syncing content
+[2m00:35:31[22m [34m[content][39m Astro config changed
+[2m00:35:31[22m [34m[content][39m Clearing content store
+[2m00:35:31[22m [34m[content][39m Synced content
+[2m00:35:31[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[42m[1m astro [22m[49m [32mv6.3.5[39m [2mready in[22m 4127 [2mms[22m
+[2m┃[22m Local    [36mhttp://127.0.0.1:4321/[39m
+[2m00:35:31[22m [32mwatching for file changes...[39m
+[2m00:38:09[22m [34m[200][39m / [2m121ms[22m

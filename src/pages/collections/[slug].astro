@@ -1,0 +1,176 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { getGallery } from '../../lib/collections';
+
+export async function getStaticPaths() {
+	const collections = await getCollection('collections');
+
+	return collections.map((collection) => ({
+		params: { slug: collection.id },
+		props: { collection },
+	}));
+}
+
+interface Props {
+	collection: CollectionEntry<'collections'>;
+}
+
+const { collection } = Astro.props;
+const { data } = collection;
+const collectionLinks = await getCollection('collections');
+const gallery = getGallery(collection);
+const photoCount = gallery.images.length.toString().padStart(2, '0');
+const collectionLabels: Record<string, string> = {
+	'city-after-dark': 'streets',
+	'coastal-studies': 'landscapes',
+	'portrait-notes': 'portraits',
+};
+const collectionLabel = collectionLabels[collection.id] ?? collection.id;
+const showPhotoCardCaptions = collection.id !== 'portrait-notes';
+---
+
+<Layout title={`${data.title} | Angelica Porcelli`} description={data.description}>
+	<header class="topbar">
+		<div class="site-shell topbar__inner">
+			<a class="brand" href="/" aria-label="Angelica Porcelli Photography home">
+				<span class="brand__name">Angelica Porcelli</span>
+				<span class="brand__meta">Photography</span>
+			</a>
+			<nav class="nav" aria-label="Portfolio sections">
+				<a href="/#resume">CV</a>
+				<a href="/#studies">Studies</a>
+				<a href="/#portfolio">Portfolio</a>
+				<a href="/#contact">Contact</a>
+			</nav>
+		</div>
+	</header>
+
+	<main>
+		<section class="site-shell collection-switcher" aria-label="Portfolio collections">
+			<nav class="collection-switcher__nav">
+				{collectionLinks.map((item) => (
+					<a
+						class={`collection-switcher__link ${item.id === collection.id ? 'is-active' : ''}`}
+						href={`/collections/${item.id}/`}
+						aria-current={item.id === collection.id ? 'page' : undefined}
+					>
+						{item.data.title}
+					</a>
+				))}
+			</nav>
+		</section>
+
+		<section class={`site-shell page-hero ${gallery.cover ? '' : 'page-hero--no-cover'}`}>
+			<div class="page-hero__copy">
+				<p class="eyebrow">{data.category} gallery / {data.year}</p>
+				<h1 class="page-title">{data.title}</h1>
+				<p>{data.description}</p>
+				<div class="page-hero__meta" aria-label="Gallery details">
+					<span class="meta-chip">{photoCount} photos</span>
+					<span class="meta-chip">/{collectionLabel}</span>
+				</div>
+			</div>
+			{
+				gallery.cover && (
+					<div class="page-hero__cover">
+						<img src={gallery.cover.src} alt={gallery.cover.alt} loading="eager" />
+					</div>
+				)
+			}
+		</section>
+
+		<section class="site-shell gallery-section" aria-label={`${data.title} photos`}>
+			<div class="section__head section__head--compact">
+				<div>
+					<p class="eyebrow">All photos</p>
+					<h2>Full edit.</h2>
+				</div>
+			
+			</div>
+
+			{
+				gallery.images.length > 0 ? (
+					<div class="photo-grid">
+						{gallery.images.map((image, index) => (
+						<button
+							class="photo-tile"
+							type="button"
+							data-lightbox-trigger
+							data-full-src={image.src}
+							data-full-alt={image.alt}
+							data-full-title={image.title}
+							data-full-caption={image.caption}
+							aria-label={`Open ${image.title} fullscreen`}
+						>
+							<img src={image.src} alt={image.alt} loading={index < 2 ? 'eager' : 'lazy'} />
+							{
+								showPhotoCardCaptions && (
+									<span>
+										<strong>{image.title}</strong>
+										<small>{String(index + 1).padStart(2, '0')}</small>
+									</span>
+								)
+							}
+						</button>
+						))}
+					</div>
+				) : (
+					<div class="empty-state">
+						<p>Add `.jpg`, `.jpeg`, `.png`, or `.webp` files to <code>public/photos/{collection.id}/</code>.</p>
+					</div>
+				)
+			}
+		</section>
+	</main>
+
+	<footer class="footer">
+		<div class="site-shell footer__inner">
+			<a class="pill-link" href={`/#${data.category}`}>Back to Intro</a>
+			<a class="pill-link" href="/#contact">Contact</a>
+		</div>
+	</footer>
+
+	<dialog class="lightbox" data-lightbox aria-label="Fullscreen image viewer">
+		<button class="lightbox__close" type="button" data-lightbox-close aria-label="Close fullscreen image">
+			Close
+		</button>
+		<img data-lightbox-image src="" alt="" />
+		{
+			showPhotoCardCaptions && (
+				<div class="lightbox__caption">
+					<p data-lightbox-caption></p>
+				</div>
+			)
+		}
+	</dialog>
+
+	<script>
+		const dialog = document.querySelector('[data-lightbox]');
+		const image = document.querySelector('[data-lightbox-image]');
+		const caption = document.querySelector('[data-lightbox-caption]');
+		const close = document.querySelector('[data-lightbox-close]');
+		const triggers = document.querySelectorAll('[data-lightbox-trigger]');
+
+		if (dialog instanceof HTMLDialogElement && image instanceof HTMLImageElement) {
+			triggers.forEach((trigger) => {
+				trigger.addEventListener('click', () => {
+					if (!(trigger instanceof HTMLElement)) return;
+					const button = trigger;
+					image.src = button.dataset.fullSrc || '';
+					image.alt = button.dataset.fullAlt || '';
+
+					if (caption) caption.textContent = button.dataset.fullCaption || '';
+
+					dialog.showModal();
+				});
+			});
+
+			close?.addEventListener('click', () => dialog.close());
+
+			dialog.addEventListener('click', (event) => {
+				if (event.target === dialog) dialog.close();
+			});
+		}
+	</script>
+</Layout>
