@@ -27,7 +27,7 @@ const collectionLabels: Record<string, string> = {
 	'portrait-notes': 'portraits',
 };
 const collectionLabel = collectionLabels[collection.id] ?? collection.id;
-const showPhotoCardCaptions = collection.id !== 'portrait-notes';
+const showPhotoCardCaptions = !['portrait-notes', 'events'].includes(collection.id);
 ---
 
 <Layout title={`${data.title} | Angelica Porcelli`} description={data.description}>

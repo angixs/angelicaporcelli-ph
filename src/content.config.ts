@@ -7,7 +7,7 @@ const photographyCollections = defineCollection({
 		title: z.string(),
 		subtitle: z.string(),
 		description: z.string(),
-		category: z.enum(['nature', 'portrait', 'street', 'animals']),
+		category: z.enum(['nature', 'portrait', 'street', 'animals', 'events']),
 		location: z.string(),
 		year: z.string(),
 		cover: z.string().optional(),

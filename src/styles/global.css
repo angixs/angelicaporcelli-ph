@@ -389,7 +389,7 @@ button {
 
 .collection-grid {
 	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
+	grid-template-columns: repeat(5, minmax(0, 1fr));
 	gap: 18px;
 }
 
@@ -401,6 +401,12 @@ button {
 	border-radius: 8px;
 	background: #111;
 	isolation: isolate;
+}
+
+.collection-card--empty {
+	background:
+		linear-gradient(135deg, rgba(182, 72, 48, 0.48), rgba(109, 118, 92, 0.5)),
+		#1b1b1a;
 }
 
 .collection-card::after {

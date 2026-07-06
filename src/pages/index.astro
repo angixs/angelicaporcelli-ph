@@ -31,7 +31,7 @@ const collections = (await getCollection('collections'))
 	<main>
 		<section class="site-shell hero" id="resume">
 			<div class="hero__copy">
-				<p class="eyebrow">Photographer / nature, animals, portrait, street</p>
+				<p class="eyebrow">Photographer / nature, animals, portrait, street, events</p>
 				<h1>Angelica Porcelli</h1>
 				<p class="hero__lede">
 					I am a photographer passionate about visual storytelling. I take photos to express my point of view and interpret reality through my own eyes, striving to capture the world as I see it. 
@@ -90,7 +90,7 @@ const collections = (await getCollection('collections'))
 						<p class="eyebrow">Portfolio section</p>
 						<h2>Portfolio</h2>
 					</div>
-					<p>Selected photography collections across nature, animals, portrait, and street work.</p>
+					<p>Selected photography collections across nature, animals, portrait, street, and events work.</p>
 				</div>
 
 				<div class="collection-grid">
@@ -98,9 +98,16 @@ const collections = (await getCollection('collections'))
 						collections.map(({ collection, gallery }) => {
 							if (!gallery.cover) {
 								return (
-									<div class="empty-state">
-										<p>Add photos to <code>public/photos/{collection.id}/</code>.</p>
-									</div>
+									<a class="collection-card collection-card--empty" href={`/collections/${collection.id}/`}>
+										<div class="collection-card__body">
+											<h3>{collection.data.title}</h3>
+											<p>{collection.data.subtitle}</p>
+											<div class="collection-card__footer">
+												<span>0 photos</span>
+												<span>Open gallery</span>
+											</div>
+										</div>
+									</a>
 								);
 							}
 
