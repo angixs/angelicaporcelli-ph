@@ -5,7 +5,7 @@ Each collection loads photos from the folder that matches its collection file na
 For `src/content/collections/coastal-studies.json`, add images here:
 
 ```text
-public/photos/coastal-studies/
+src/assets/photos/coastal-studies/
 ```
 
 Supported image files:
@@ -20,8 +20,8 @@ Supported image files:
 Optional metadata can be added with a JSON file that has the same base name as the image:
 
 ```text
-public/photos/coastal-studies/liguria.jpg
-public/photos/coastal-studies/liguria.json
+src/assets/photos/coastal-studies/liguria.jpg
+src/assets/photos/coastal-studies/liguria.json
 ```
 
 Example metadata:

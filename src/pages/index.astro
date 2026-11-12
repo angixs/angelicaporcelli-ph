@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import { getGallery } from '../lib/collections';
+import ResponsivePhoto from '../components/ResponsivePhoto.astro';
+import portrait from '../assets/photos/me.jpeg';
 
 const collections = (await getCollection('collections'))
 	.filter((collection) => collection.data.featured)
@@ -44,11 +46,12 @@ const collections = (await getCollection('collections'))
 			</div>
 
 			<aside class="resume-panel" aria-label="Short CV">
-				<img
+				<ResponsivePhoto
 					class="resume-panel__image"
-					src="/photos/me.jpeg"
+					src={portrait}
 					alt="Portrait of Angelica Porcelli."
-					loading="eager"
+					sizes="(max-width: 748px) calc(100vw - 30px), (max-width: 900px) 718px, (min-width: 1216px) 484px, calc(41.17vw - 18px)"
+					priority
 				/>
 			</aside>
 		</section>
@@ -113,7 +116,7 @@ const collections = (await getCollection('collections'))
 
 							return (
 								<a class="collection-card" href={`/collections/${collection.id}/`}>
-									<img src={gallery.cover.src} alt={gallery.cover.alt} loading="lazy" />
+									<ResponsivePhoto src={gallery.cover.asset} alt={gallery.cover.alt} sizes={`(max-width: 748px) max(calc(100vw - 28px), ${Math.ceil(420 * gallery.cover.asset.width / gallery.cover.asset.height)}px), (max-width: 900px) max(720px, ${Math.ceil(420 * gallery.cover.asset.width / gallery.cover.asset.height)}px), ${Math.ceil(Math.max(222, 520 * gallery.cover.asset.width / gallery.cover.asset.height) * 1.07)}px`} />
 									<div class="collection-card__body">
 										<h3>{collection.data.title}</h3>
 									<p>{collection.data.subtitle}</p>

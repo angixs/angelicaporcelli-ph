@@ -212,6 +212,7 @@ button {
 }
 
 .resume-panel__image {
+	height: auto;
 	aspect-ratio: 4 / 5;
 	width: 100%;
 	object-fit: cover;
@@ -634,6 +635,7 @@ button {
 }
 
 .page-hero__cover img {
+	height: auto;
 	aspect-ratio: 16 / 11;
 	width: 100%;
 	object-fit: cover;

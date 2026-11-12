@@ -1,4 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
+import type { ImageMetadata as AstroImageMetadata } from 'astro';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 
@@ -7,6 +8,7 @@ type PhotoCollection = CollectionEntry<'collections'>;
 export interface GalleryImage {
 	fileName: string;
 	src: string;
+	asset: AstroImageMetadata;
 	alt: string;
 	title: string;
 	caption: string;
@@ -23,7 +25,11 @@ interface ImageMetadata {
 	cover?: boolean;
 }
 
-const PHOTO_ROOT = join(process.cwd(), 'public', 'photos');
+const PHOTO_ROOT = join(process.cwd(), 'src', 'assets', 'photos');
+const assets = import.meta.glob<{ default: AstroImageMetadata }>(
+	'/src/assets/photos/**/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}',
+	{ eager: true },
+);
 const IMAGE_EXTENSION_PATTERN = /\.(jpe?g|png|webp)$/i;
 
 function titleFromFile(file: string) {
@@ -53,10 +59,13 @@ function normalizeImage(collectionDir: string, collectionId: string, fileName: s
 	const metadata = readImageMetadata(collectionDir, fileName);
 	const title = metadata.title ?? metadata.name ?? titleFromFile(fileName);
 	const caption = metadata.caption ?? metadata.name ?? title;
+	const asset = assets[`/src/assets/photos/${collectionId}/${fileName}`]?.default;
+	if (!asset) throw new Error(`Missing image import: ${collectionId}/${fileName}`);
 
 	return {
 		fileName,
-		src: `/photos/${collectionId}/${fileName}`,
+		src: `/photos/${collectionId}/${encodeURIComponent(fileName)}`,
+		asset,
 		alt: metadata.alt ?? `Photo of ${title}.`,
 		title,
 		caption,

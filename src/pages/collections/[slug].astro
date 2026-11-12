@@ -2,6 +2,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { getGallery } from '../../lib/collections';
+import ResponsivePhoto from '../../components/ResponsivePhoto.astro';
 
 export async function getStaticPaths() {
 	const collections = await getCollection('collections');
@@ -74,7 +75,7 @@ const showPhotoCardCaptions = !['portrait-notes', 'events'].includes(collection.
 			{
 				gallery.cover && (
 					<div class="page-hero__cover">
-						<img src={gallery.cover.src} alt={gallery.cover.alt} loading="eager" />
+						<ResponsivePhoto src={gallery.cover.asset} alt={gallery.cover.alt} sizes="(max-width: 748px) calc(100vw - 28px), (max-width: 900px) 720px, (min-width: 1216px) 627px, calc(53.2vw - 20px)" priority />
 					</div>
 				)
 			}
@@ -103,7 +104,7 @@ const showPhotoCardCaptions = !['portrait-notes', 'events'].includes(collection.
 							data-full-caption={image.caption}
 							aria-label={`Open ${image.title} fullscreen`}
 						>
-							<img src={image.src} alt={image.alt} loading={index < 2 ? 'eager' : 'lazy'} />
+							<ResponsivePhoto src={image.asset} alt={image.alt} sizes="(max-width: 560px) calc(100vw - 28px), (max-width: 748px) calc(50vw - 21px), (max-width: 900px) 353px, (min-width: 1216px) 384px, calc(33.33vw - 21.33px)" />
 							{
 								showPhotoCardCaptions && (
 									<span>
@@ -117,7 +118,7 @@ const showPhotoCardCaptions = !['portrait-notes', 'events'].includes(collection.
 					</div>
 				) : (
 					<div class="empty-state">
-						<p>Add `.jpg`, `.jpeg`, `.png`, or `.webp` files to <code>public/photos/{collection.id}/</code>.</p>
+						<p>Add `.jpg`, `.jpeg`, `.png`, or `.webp` files to <code>src/assets/photos/{collection.id}/</code>.</p>
 					</div>
 				)
 			}
@@ -135,7 +136,7 @@ const showPhotoCardCaptions = !['portrait-notes', 'events'].includes(collection.
 		<button class="lightbox__close" type="button" data-lightbox-close aria-label="Close fullscreen image">
 			Close
 		</button>
-		<img data-lightbox-image src="" alt="" />
+		<img data-lightbox-image alt="" decoding="async" />
 		{
 			showPhotoCardCaptions && (
 				<div class="lightbox__caption">

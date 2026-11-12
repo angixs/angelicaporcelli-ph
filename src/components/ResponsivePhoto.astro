@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+	src: ImageMetadata;
+	alt: string;
+	sizes: string;
+	class?: string;
+	priority?: boolean;
+}
+
+const { src, alt, sizes, class: className, priority = false } = Astro.props;
+// Never enlarge a source. Width-only transforms preserve its entire composition.
+const widths = [...new Set([320, 480, 672, 840, 1080, 1440].map((width) => Math.min(width, src.width)))];
+---
+
+<Image
+	src={src}
+	alt={alt}
+	class={className}
+	width={Math.min(840, src.width)}
+	widths={widths}
+	sizes={sizes}
+	format="webp"
+	quality={90}
+	layout="none"
+	loading={priority ? 'eager' : 'lazy'}
+	fetchpriority={priority ? 'high' : 'auto'}
+	decoding="async"
+/>
